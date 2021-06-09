@@ -1,7 +1,10 @@
 package com.algaworks.algalog.domain.service;
 
+import org.springframework.stereotype.Service;
+
 import com.algaworks.algalog.domain.model.Client;
 
+@Service
 public class ClientService {
 
 	public Client save(Client client) {
