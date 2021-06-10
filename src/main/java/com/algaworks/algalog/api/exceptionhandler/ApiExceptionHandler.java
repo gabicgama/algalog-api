@@ -33,11 +33,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		List<StandardError.Field> fields = new ArrayList<>();
 		for (ObjectError objError : ex.getBindingResult().getAllErrors()) {
 			String name = ((FieldError) objError).getField();
-			String message = messageSource.getMessage(objError, LocaleContextHolder.getLocale()); // LocaleContextHolder
-																									// customiza a
-																									// linguagem da
-																									// mensagem pra
-																									// região
+			// LocaleContextHolder muda a linguagem da mensagem de acordo com a região
+			String message = messageSource.getMessage(objError, LocaleContextHolder.getLocale());																					
 			fields.add(new StandardError.Field(name, message));
 		}
 		StandardError errors = new StandardError();
