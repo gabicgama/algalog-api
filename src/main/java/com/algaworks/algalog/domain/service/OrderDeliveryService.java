@@ -1,8 +1,7 @@
 package com.algaworks.algalog.domain.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,13 +10,13 @@ import com.algaworks.algalog.domain.model.Delivery;
 import com.algaworks.algalog.domain.model.StatusDelivery;
 import com.algaworks.algalog.domain.repository.DeliveryRepository;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Service
-public class DeliveryService {
+public class OrderDeliveryService {
 
-	@Autowired
 	DeliveryRepository repository;
-
-	@Autowired
 	ClientService ClientService;
 
 	@Transactional
@@ -25,7 +24,7 @@ public class DeliveryService {
 		Client client = ClientService.findById(delivery.getClient().getId());
 		delivery.setClient(client);
 		delivery.setStatus(StatusDelivery.PENDING);
-		delivery.setDateOrder(LocalDateTime.now());
+		delivery.setDateOrder(OffsetDateTime.now());
 		return repository.save(delivery);
 	}
 }
