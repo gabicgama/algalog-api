@@ -14,12 +14,16 @@ public class ClientService {
 	@Autowired
 	ClientRepository repository;
 
+	@Transactional(readOnly = true)
+	public Client findById(Long id) {
+		return repository.findById(id).orElseThrow(() -> new DomainException("Cliente não encontrado"));
+	}
+
 	@Transactional
 	public Client save(Client client) {
-		boolean emailUsed = repository.findByEmail(client.getEmail())
-				.stream()
+		boolean emailUsed = repository.findByEmail(client.getEmail()).stream()
 				.anyMatch(clientExists -> !clientExists.equals(client));
-		
+
 		if (emailUsed) {
 			throw new DomainException("Já existe um cliente cadastrado com este e-mail.");
 		}
