@@ -8,7 +8,7 @@ public class FindDeliveryService {
 
 	private DeliveryRepository repository;
 
-	public Delivery buscar(Long deliveryId) {
+	public Delivery findById(Long deliveryId) {
 		return repository.findById(deliveryId).orElseThrow(() -> new EntityNotFoundException("Entrega não encontrada"));
 	}
 }

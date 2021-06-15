@@ -19,6 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.algaworks.algalog.domain.exception.DomainException;
+import com.algaworks.algalog.domain.exception.EntityNotFoundException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -34,7 +35,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		for (ObjectError objError : ex.getBindingResult().getAllErrors()) {
 			String name = ((FieldError) objError).getField();
 			// LocaleContextHolder muda a linguagem da mensagem de acordo com a região
-			String message = messageSource.getMessage(objError, LocaleContextHolder.getLocale());																					
+			String message = messageSource.getMessage(objError, LocaleContextHolder.getLocale());
 			fields.add(new StandardError.Field(name, message));
 		}
 		StandardError errors = new StandardError();
@@ -46,8 +47,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(DomainException.class)
-	public ResponseEntity<Object> handleNegocio(DomainException ex, WebRequest request) {
+	public ResponseEntity<Object> handleDomainException(DomainException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
+
+		StandardError error = new StandardError();
+		error.setStatus(status.value());
+		error.setDateTime(OffsetDateTime.now());
+		error.setTitle(ex.getMessage());
+
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.NOT_FOUND;
 
 		StandardError error = new StandardError();
 		error.setStatus(status.value());
